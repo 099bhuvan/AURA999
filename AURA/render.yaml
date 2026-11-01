@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: aura-assistant
+    runtime: docker
+    repo: https://github.com/YOUR_GITHUB_USERNAME/AURA # replace with your repo
+    plan: starter # Starter ($7/mo, 1GB RAM recommended for smooth GUI streaming) or free
+    region: oregon # or ohio, frankfurt, singapore
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: AI_DEFAULT_MODE
+        value: online
+      - key: ONLINE_API_KEY
+        sync: false # Set securely in Render dashboard
+      - key: ONLINE_API_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: ONLINE_MODEL_NAME
+        value: gemini-3.5-flash
+      - key: REDUCED_MOTION
+        value: "false"

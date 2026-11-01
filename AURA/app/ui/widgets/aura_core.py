@@ -330,22 +330,25 @@ class AuraCoreWidget(QWidget):
 
         painter.restore()
 
-        # 6. Glowing Central Sphere
-        core_r = max_r * (0.28 + 0.05 * pulse + 0.06 * effective_audio)
-        core_gradient = QRadialGradient(cx, cy, core_r)
-        core_gradient.setColorAt(0.0, QColor(255, 255, 255, 250))
-        core_gradient.setColorAt(0.35, QColor(center_color.red(), center_color.green(), center_color.blue(), 230))
-        core_gradient.setColorAt(0.75, QColor(primary_color.red(), primary_color.green(), primary_color.blue(), 140))
-        core_gradient.setColorAt(1.0, QColor(primary_color.red(), primary_color.green(), primary_color.blue(), 0))
+        # 6. Cosmic Singularity (Black Hole Event Horizon & Photonsphere)
+        event_horizon_r = max_r * (0.22 + 0.03 * pulse + 0.04 * effective_audio)
+        
+        # Photonsphere Einstein ring glow
+        photonsphere_r = event_horizon_r * 1.6
+        rim_gradient = QRadialGradient(cx, cy, photonsphere_r)
+        rim_gradient.setColorAt(0.0, QColor(0, 0, 0, 255))
+        rim_gradient.setColorAt(0.55, QColor(primary_color.red(), primary_color.green(), primary_color.blue(), 240))
+        rim_gradient.setColorAt(0.82, QColor(accent_ring_color.red(), accent_ring_color.green(), accent_ring_color.blue(), 180))
+        rim_gradient.setColorAt(1.0, QColor(0, 0, 0, 0))
 
         painter.setPen(Qt.NoPen)
-        painter.setBrush(QBrush(core_gradient))
-        painter.drawEllipse(QPointF(cx, cy), core_r, core_r)
+        painter.setBrush(QBrush(rim_gradient))
+        painter.drawEllipse(QPointF(cx, cy), photonsphere_r, photonsphere_r)
 
-        # Center highlight bead
-        bead_r = core_r * 0.35
-        painter.setBrush(QBrush(QColor(255, 255, 255, int(200 + 55 * pulse))))
-        painter.drawEllipse(QPointF(cx, cy), bead_r, bead_r)
+        # Pitch-black void singularity (the Black Hole center)
+        painter.setBrush(QBrush(QColor(2, 3, 6, 255)))
+        painter.setPen(QPen(primary_color, 1.4))
+        painter.drawEllipse(QPointF(cx, cy), event_horizon_r, event_horizon_r)
 
         # 7. State text watermark under core
         state_label = self.state.upper()

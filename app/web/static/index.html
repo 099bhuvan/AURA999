@@ -201,11 +201,24 @@
             border-bottom: 1px solid var(--border-subtle);
         }
 
+        .mini-black-hole {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #000 32%, #00f0ff 65%, #8a2be2 85%, transparent 100%);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.7), 0 0 20px rgba(138, 43, 226, 0.5);
+            position: relative;
+            display: inline-block;
+            animation: cosmic-spin 8s linear infinite;
+        }
+        @keyframes cosmic-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
         .brand-logo {
-            font-size: 24px;
-            color: var(--cyan-primary);
-            font-weight: 900;
-            text-shadow: 0 0 10px var(--cyan-primary);
+            display: flex;
+            align-items: center;
         }
 
         .brand-title {
@@ -416,8 +429,23 @@
             cursor: grabbing;
         }
         #auraCanvas {
-            width: 320px;
+            width: 340px;
             height: 320px;
+            filter: drop-shadow(0 0 16px rgba(0, 240, 255, 0.45)) drop-shadow(0 0 32px rgba(138, 43, 226, 0.35));
+            transition: filter 0.3s ease;
+        }
+
+        .cosmic-logo-title {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 0.35em;
+            background: linear-gradient(135deg, #a5f3fc 0%, #38bdf8 30%, #a855f7 70%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 14px rgba(0, 240, 255, 0.8)) drop-shadow(0 0 28px rgba(138, 43, 226, 0.6));
+            margin-top: -8px;
+            text-indent: 0.35em;
         }
 
         /* Home Controls */
@@ -637,9 +665,9 @@
     <!-- Sidebar -->
     <nav id="sidebar">
         <div class="brand-header">
-            <span class="brand-logo">◈</span>
+            <div class="mini-black-hole"></div>
             <span class="brand-title">AURA</span>
-            <span class="brand-tag">AI v1.0</span>
+            <span class="brand-tag">COSMIC AI</span>
         </div>
         <div class="nav-links">
             <button class="nav-btn active" onclick="switchPage('home')">⬡ &nbsp; Home Dashboard</button>
@@ -687,9 +715,10 @@
                 </div>
 
                 <div class="aura-core-wrapper" id="coreWrapper">
-                    <canvas id="auraCanvas" width="340" height="340"></canvas>
-                    <div style="font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--cyan-primary); margin-top: 10px;" id="coreStateText">
-                        ● &nbsp; IDLE &nbsp; ●
+                    <canvas id="auraCanvas" width="380" height="340"></canvas>
+                    <div class="cosmic-logo-title">AURA</div>
+                    <div style="font-family: var(--font-display); font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--cyan-primary); margin-top: 8px;" id="coreStateText">
+                        ● &nbsp; COSMIC SINGULARITY ONLINE &nbsp; ●
                     </div>
                 </div>
 
@@ -965,141 +994,199 @@
     let activeDocId = null;
     let speechRecognition = null;
 
-    // Canvas Core Setup
+    // Cosmic Black Hole Singularity & Universe Core (Image 2 Match)
     const canvas = document.getElementById('auraCanvas');
     const ctx = canvas.getContext('2d');
-    const particles = Array.from({ length: 45 }, () => ({
-        angle: Math.random() * Math.PI * 2,
-        dist: 20 + Math.random() * 120,
-        speed: (Math.random() - 0.5) * 0.04,
-        size: 1.2 + Math.random() * 2.2,
-        alpha: 0.3 + Math.random() * 0.7
-    }));
+
+    const PARTICLE_COUNT = 150;
+    const particles = [];
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(spawnCosmicParticle());
+    }
+
+    function spawnCosmicParticle(startFar = false) {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = startFar ? (130 + Math.random() * 45) : (26 + Math.random() * 145);
+        const colorSeed = Math.random();
+        return {
+            angle,
+            dist,
+            baseSpeed: 0.012 + Math.random() * 0.024,
+            infallSpeed: 0.16 + Math.random() * 0.38,
+            size: 0.8 + Math.random() * 2.3,
+            colorType: colorSeed > 0.6 ? 1 : (colorSeed > 0.25 ? 2 : 3),
+            alpha: 0.35 + Math.random() * 0.65
+        };
+    }
+
+    let mouseTiltX = 0;
+    let mouseTiltY = 0;
+
+    canvas.addEventListener('mousemove', e => {
+        const rect = canvas.getBoundingClientRect();
+        mouseTiltX = (e.clientX - rect.left) / rect.width - 0.5;
+        mouseTiltY = (e.clientY - rect.top) / rect.height - 0.5;
+    });
+    canvas.addEventListener('mouseleave', () => {
+        mouseTiltX = 0;
+        mouseTiltY = 0;
+    });
 
     function renderAuraCore() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const cx = canvas.width / 2;
-        const cy = canvas.height / 2;
+        const cy = canvas.height / 2 - 10;
 
-        let primaryColor = '#00f0ff';
-        let accentColor = '#0072ff';
-        let pulseSpeed = 0.03;
+        let primaryColor = '#00f0ff'; // Cyan
+        let violetColor = '#8a2be2';  // Violet
+        let magentaColor = '#d946ef'; // Magenta
+        let spinRate = 0.025;
+        let pulseSpeed = 0.035;
 
         if (coreState === 'thinking') {
-            primaryColor = '#b829ea';
-            accentColor = '#00f0ff';
+            primaryColor = '#00f0ff';
+            violetColor = '#c026d3';
+            magentaColor = '#f43f5e';
+            spinRate = 0.075;
             pulseSpeed = 0.08;
-            coreRotation1 += 2.2;
-            coreRotation2 -= 3.0;
+            coreRotation1 += 3.2;
         } else if (coreState === 'listening') {
             primaryColor = '#00ffcc';
-            accentColor = '#0072ff';
-            pulseSpeed = 0.06;
-            coreRotation1 += 1.0;
-            coreRotation2 -= 1.2;
+            violetColor = '#3b82f6';
+            magentaColor = '#06b6d4';
+            spinRate = 0.04;
+            pulseSpeed = 0.065;
+            coreRotation1 += 1.8;
         } else if (coreState === 'speaking') {
-            primaryColor = '#00f0ff';
-            accentColor = '#8a2be2';
+            primaryColor = '#38bdf8';
+            violetColor = '#a855f7';
+            magentaColor = '#ec4899';
+            spinRate = 0.045;
             pulseSpeed = 0.07;
-            coreRotation1 += 1.4;
-            coreRotation2 -= 1.6;
+            coreRotation1 += 2.2;
         } else if (coreState === 'error') {
             primaryColor = '#ff0055';
-            accentColor = '#ff8800';
+            violetColor = '#ff5500';
+            magentaColor = '#ff0088';
+            spinRate = 0.015;
             pulseSpeed = 0.12;
         } else {
-            coreRotation1 += 0.5;
-            coreRotation2 -= 0.3;
+            coreRotation1 += 0.8;
         }
 
         corePulse = (corePulse + pulseSpeed) % (Math.PI * 2);
         const pulse = (Math.sin(corePulse) + 1) / 2;
 
-        // Apply drag inertia
+        // Inertial Drag
         if (!isDragging) {
             userRotation += spinVelocity;
             spinVelocity *= 0.94;
         }
 
-        // 1. Ambient Glow
-        const bgGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 140 * (0.8 + 0.2 * pulse));
-        bgGrad.addColorStop(0, primaryColor + '33');
-        bgGrad.addColorStop(1, 'transparent');
-        ctx.fillStyle = bgGrad;
-        ctx.beginPath();
-        ctx.arc(cx, cy, 140, 0, Math.PI * 2);
-        ctx.fill();
+        const effectiveRot = (coreRotation1 + userRotation) * (Math.PI / 180);
+        const eventHorizonRadius = 24 + pulse * 3;
 
-        // 2. Particles
-        particles.forEach(p => {
-            p.angle += p.speed;
-            const px = cx + p.dist * Math.cos(p.angle);
-            const py = cy + p.dist * Math.sin(p.angle);
-            ctx.fillStyle = primaryColor;
-            ctx.globalAlpha = p.alpha * (0.5 + 0.5 * pulse);
-            ctx.beginPath();
-            ctx.arc(px, py, p.size, 0, Math.PI * 2);
-            ctx.fill();
-        });
-        ctx.globalAlpha = 1.0;
-
-        // 3. Outer Reticle Ring
+        // 1. Ethereal Outer Nebula Eye (Gravitational Lensing Distortion like Image 2)
         ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate((coreRotation1 + userRotation) * Math.PI / 180);
-        ctx.strokeStyle = primaryColor + '77';
-        ctx.lineWidth = 1.4;
-        ctx.setLineDash([12, 10, 4, 10]);
+        ctx.translate(cx + mouseTiltX * 12, cy + mouseTiltY * 10);
+        ctx.scale(1.35, 0.72); // Elliptical cosmic eye contour
+        const eyeGrad = ctx.createRadialGradient(0, 0, 50, 0, 0, 160 + pulse * 25);
+        eyeGrad.addColorStop(0, 'rgba(138, 43, 226, 0.28)');
+        eyeGrad.addColorStop(0.4, 'rgba(0, 240, 255, 0.12)');
+        eyeGrad.addColorStop(0.8, 'rgba(217, 70, 239, 0.06)');
+        eyeGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = eyeGrad;
         ctx.beginPath();
-        ctx.arc(0, 0, 130, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.arc(0, 0, 160 + pulse * 20, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
 
-        // Reticle ticks
-        ctx.strokeStyle = primaryColor;
-        ctx.lineWidth = 1.5;
-        ctx.setLineDash([]);
-        for (let i = 0; i < 16; i++) {
-            const rad = (Math.PI * 2 / 16) * i;
+        // 2. Swirling Logarithmic Accretion Disk Arms (Image 2 Spiral Vortex)
+        ctx.save();
+        ctx.translate(cx + mouseTiltX * 18, cy + mouseTiltY * 14);
+        ctx.globalCompositeOperation = 'lighter';
+
+        const numArms = 3;
+        const timeOffset = Date.now() * 0.0018 * (spinRate / 0.025);
+        for (let arm = 0; arm < numArms; arm++) {
+            const armAngle = (Math.PI * 2 / numArms) * arm + timeOffset;
             ctx.beginPath();
-            ctx.moveTo(125 * Math.cos(rad), 125 * Math.sin(rad));
-            ctx.lineTo(135 * Math.cos(rad), 135 * Math.sin(rad));
+            for (let r = eventHorizonRadius + 4; r < 145; r += 2.5) {
+                // Logarithmic spiral: θ = armAngle + ln(r/r0)*b
+                const theta = armAngle + Math.log(r / eventHorizonRadius) * 2.3;
+                const px = r * Math.cos(theta);
+                const py = (r * 0.82) * Math.sin(theta); // slight 3D perspective tilt
+                if (r === eventHorizonRadius + 4) {
+                    ctx.moveTo(px, py);
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+            ctx.strokeStyle = arm === 0 ? primaryColor : (arm === 1 ? magentaColor : violetColor);
+            ctx.lineWidth = 3.6 * (1 + pulse * 0.35);
             ctx.stroke();
         }
-        ctx.restore();
 
-        // 4. Middle Concentric Ring
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate((coreRotation2 + userRotation * 1.3) * Math.PI / 180);
-        ctx.strokeStyle = accentColor;
-        ctx.lineWidth = 1.8;
-        ctx.setLineDash([30, 20, 60, 20]);
-        ctx.beginPath();
-        ctx.arc(0, 0, 100, 0, Math.PI * 2);
-        ctx.stroke();
+        // 3. Cosmic Infall Particles (Accelerating inward into singularity)
+        particles.forEach((p, idx) => {
+            const orbitalSpeed = (90 / Math.max(p.dist, 12)) * 0.016;
+            p.angle += (p.baseSpeed + orbitalSpeed) * (spinRate / 0.025);
+            p.dist -= p.infallSpeed * (spinRate / 0.025) + (pulse * 0.25);
 
-        // Nodes
-        for (let i = 0; i < 4; i++) {
-            const rad = (Math.PI / 2) * i;
-            ctx.fillStyle = primaryColor;
+            if (p.dist <= eventHorizonRadius) {
+                particles[idx] = spawnCosmicParticle(true);
+                return;
+            }
+
+            const px = p.dist * Math.cos(p.angle);
+            const py = (p.dist * 0.82) * Math.sin(p.angle);
+
+            let pCol = '#ffffff';
+            if (p.colorType === 1) pCol = primaryColor;
+            else if (p.colorType === 2) pCol = magentaColor;
+            else if (p.colorType === 3) pCol = violetColor;
+
+            ctx.fillStyle = pCol;
+            ctx.globalAlpha = Math.min(1, p.alpha * ((p.dist - eventHorizonRadius) / 18));
             ctx.beginPath();
-            ctx.arc(100 * Math.cos(rad), 100 * Math.sin(rad), 3.5, 0, Math.PI * 2);
+            ctx.arc(px, py, p.size * (1 + pulse * 0.5), 0, Math.PI * 2);
             ctx.fill();
-        }
+        });
+
+        ctx.globalAlpha = 1.0;
+        ctx.globalCompositeOperation = 'source-over';
         ctx.restore();
 
-        // 5. Central Sphere
-        const coreR = 40 + 8 * pulse;
-        const sphereGrad = ctx.createRadialGradient(cx, cy, 2, cx, cy, coreR);
-        sphereGrad.addColorStop(0, '#ffffff');
-        sphereGrad.addColorStop(0.3, primaryColor);
-        sphereGrad.addColorStop(1, 'transparent');
-        ctx.fillStyle = sphereGrad;
+        // 4. Luminous Photonsphere Rim (Radiant Einstein Ring around Event Horizon)
+        ctx.save();
+        ctx.translate(cx + mouseTiltX * 18, cy + mouseTiltY * 14);
+
+        const rimGrad = ctx.createRadialGradient(0, 0, eventHorizonRadius * 0.75, 0, 0, eventHorizonRadius * 1.6 + pulse * 8);
+        rimGrad.addColorStop(0, '#000000');
+        rimGrad.addColorStop(0.55, primaryColor);
+        rimGrad.addColorStop(0.8, magentaColor);
+        rimGrad.addColorStop(1, 'transparent');
+
+        ctx.fillStyle = rimGrad;
         ctx.beginPath();
-        ctx.arc(cx, cy, coreR, 0, Math.PI * 2);
+        ctx.arc(0, 0, eventHorizonRadius * 1.6 + pulse * 8, 0, Math.PI * 2);
         ctx.fill();
 
+        // 5. Pitch-Black Event Horizon (Singularity Void)
+        ctx.fillStyle = '#010204';
+        ctx.beginPath();
+        ctx.arc(0, 0, eventHorizonRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Razor-sharp photonsphere boundary
+        ctx.strokeStyle = primaryColor;
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+
+        ctx.restore();
+
         requestAnimationFrame(renderAuraCore);
+    }
     }
 
     // Core Mouse Interaction

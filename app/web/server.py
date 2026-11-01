@@ -51,6 +51,7 @@ db = get_db()
 class ChatRequest(BaseModel):
     conversation_id: str
     message: str
+    chat_mode: Optional[str] = "casual"
 
 
 class CreateConvRequest(BaseModel):
@@ -172,7 +173,8 @@ async def chat_message(req: ChatRequest):
     try:
         reply_text, provider_type = ai_manager.generate(
             messages=msg_history,
-            memories=memories
+            memories=memories,
+            chat_mode=req.chat_mode or "casual"
         )
         msg_record = db.add_message(req.conversation_id, role="assistant", content=reply_text)
         return {

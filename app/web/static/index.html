@@ -520,6 +520,72 @@
             flex: 1;
         }
 
+        /* Casual & Tactical Chat Mode Controls */
+        .chat-mode-group {
+            display: inline-flex;
+            background: rgba(13, 19, 34, 0.9);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 3px;
+            gap: 3px;
+        }
+        .mode-pill {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mode-pill:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .mode-pill.active {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.22), rgba(138, 43, 226, 0.28));
+            border-color: var(--cyan-primary);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+        }
+        .chat-empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .starter-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 600px;
+            margin-top: 15px;
+        }
+        .starter-chip {
+            background: var(--bg-panel-alt);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .starter-chip:hover {
+            background: rgba(0, 240, 255, 0.12);
+            border-color: var(--cyan-primary);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 240, 255, 0.15);
+        }
+
         /* Table styles */
         table {
             width: 100%;
@@ -658,13 +724,21 @@
                         <div class="chat-sessions-list" id="chatSessionsList"></div>
                     </div>
                     <div class="glass-panel glow chat-main-area">
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px;">
-                            <span style="font-weight: 700; color: #fff;" id="currentSessionTitle">Neural Session Active</span>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                                <span style="font-weight: 700; color: #fff;" id="currentSessionTitle">Neural Session Active</span>
+                                <!-- Casual vs Tactical Mode Switcher -->
+                                <div class="chat-mode-group">
+                                    <button class="mode-pill active" id="btnModeCasual" onclick="setChatMode('casual')">💬 Casual Chat</button>
+                                    <button class="mode-pill" id="btnModeTactical" onclick="setChatMode('tactical')">⚡ Tactical AI</button>
+                                    <button class="mode-pill" id="btnModeAuto" onclick="setChatMode('auto')">✨ Adaptive</button>
+                                </div>
+                            </div>
                             <span class="chip chip-cyan" id="chatProviderTag">READY</span>
                         </div>
                         <div class="chat-messages" id="chatMessages"></div>
                         <div class="chat-input-bar">
-                            <input type="text" id="chatInput" placeholder="Ask AURA anything, or issue a tactical directive..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                            <input type="text" id="chatInput" placeholder="Chat casually with AURA, ask questions, or issue directives..." onkeydown="if(event.key==='Enter') sendChatMessage()">
                             <button class="btn-primary" onclick="sendChatMessage()">SEND ◈</button>
                         </div>
                     </div>
@@ -1106,20 +1180,90 @@
         }
     }
 
+    let currentChatMode = localStorage.getItem('aura_chat_mode') || 'casual';
+
+    function setChatMode(mode) {
+        currentChatMode = mode;
+        localStorage.setItem('aura_chat_mode', mode);
+        document.querySelectorAll('.mode-pill').forEach(btn => btn.classList.remove('active'));
+        const targetId = mode === 'casual' ? 'btnModeCasual' : (mode === 'tactical' ? 'btnModeTactical' : 'btnModeAuto');
+        const activeBtn = document.getElementById(targetId);
+        if (activeBtn) activeBtn.classList.add('active');
+
+        const input = document.getElementById('chatInput');
+        if (input) {
+            if (mode === 'casual') {
+                input.placeholder = "Chat casually with AURA, ask anything, or share your thoughts...";
+            } else if (mode === 'tactical') {
+                input.placeholder = "Issue a tactical command, code request, or structured directive...";
+            } else {
+                input.placeholder = "Ask AURA anything (Adaptive mode)...";
+            }
+        }
+    }
+
+    function quickSendChat(msg) {
+        const input = document.getElementById('chatInput');
+        if (input) {
+            input.value = msg;
+            sendChatMessage();
+        }
+    }
+
+    function formatMarkdown(text) {
+        if (!text) return '';
+        let escaped = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        // Bold
+        escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        // Inline code
+        escaped = escaped.replace(/`([^`]+)`/g, '<code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:4px;font-family:var(--font-mono);font-size:12px;">$1</code>');
+        // Bullet points
+        escaped = escaped.replace(/^\* (.*$)/gim, '<div style="margin-left:14px; margin-top:3px;">• $1</div>');
+        escaped = escaped.replace(/^- (.*$)/gim, '<div style="margin-left:14px; margin-top:3px;">• $1</div>');
+        // Line breaks
+        escaped = escaped.replace(/\n/g, '<br>');
+        return escaped;
+    }
+
     async function selectSession(id, title) {
         currentSessionId = id;
         document.getElementById('currentSessionTitle').innerText = title;
         document.querySelectorAll('.chat-session-item').forEach(el => el.classList.remove('active'));
         loadChatSessions();
+        setChatMode(currentChatMode);
 
         const res = await fetch(`/api/messages/${id}`);
         const msgs = await res.json();
         const box = document.getElementById('chatMessages');
         box.innerHTML = '';
+
+        if (!msgs || msgs.length === 0) {
+            box.innerHTML = `
+                <div class="chat-empty-state">
+                    <div style="font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--cyan-primary); margin-bottom: 6px;">
+                        AURA NEURAL DIALOGUE & COMPANION
+                    </div>
+                    <div style="color: var(--text-secondary); max-width: 480px; font-size: 13px; line-height: 1.5; margin-bottom: 15px;">
+                        Chat casually about your day, share ideas, ask questions, or switch to Tactical mode for structured directives.
+                    </div>
+                    <div class="starter-chips">
+                        <button class="starter-chip" onclick="quickSendChat('Hey AURA! How are you doing today?')">👋 "Hey AURA! How are you doing today?"</button>
+                        <button class="starter-chip" onclick="quickSendChat('Tell me an interesting or surprising fact!')">💡 "Tell me an interesting fact"</button>
+                        <button class="starter-chip" onclick="quickSendChat('Let\\'s have a casual chat. What should we talk about?')">☕ "Let's have a casual chat"</button>
+                        <button class="starter-chip" onclick="quickSendChat('Give me a quick tactical status report.')">⚡ "Tactical status report"</button>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
         msgs.forEach(m => {
             const bubble = document.createElement('div');
             bubble.className = `chat-bubble ${m.role}`;
-            bubble.innerText = m.content;
+            bubble.innerHTML = formatMarkdown(m.content);
             box.appendChild(bubble);
         });
         box.scrollTop = box.scrollHeight;
@@ -1143,10 +1287,14 @@
         input.value = '';
         const box = document.getElementById('chatMessages');
 
+        // Remove empty state if present
+        const emptyState = box.querySelector('.chat-empty-state');
+        if (emptyState) emptyState.remove();
+
         // User bubble
         const uBubble = document.createElement('div');
         uBubble.className = 'chat-bubble user';
-        uBubble.innerText = text;
+        uBubble.innerHTML = formatMarkdown(text);
         box.appendChild(uBubble);
 
         // Assistant placeholder
@@ -1163,11 +1311,15 @@
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ conversation_id: currentSessionId, message: text })
+                body: JSON.stringify({
+                    conversation_id: currentSessionId,
+                    message: text,
+                    chat_mode: currentChatMode
+                })
             });
             const data = await res.json();
             if (data.success) {
-                aBubble.innerText = data.reply;
+                aBubble.innerHTML = formatMarkdown(data.reply);
                 document.getElementById('chatProviderTag').innerText = data.provider.toUpperCase();
                 setCoreState('idle');
             } else {
@@ -1222,7 +1374,11 @@
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ conversation_id: currentSessionId, message: text })
+                body: JSON.stringify({
+                    conversation_id: currentSessionId,
+                    message: text,
+                    chat_mode: currentChatMode
+                })
             });
             const data = await res.json();
             if (data.success) {

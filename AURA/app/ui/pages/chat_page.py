@@ -126,6 +126,13 @@ class ChatPage(QWidget):
         """)
         top_layout.addWidget(self.active_provider_tag)
 
+        # Casual vs Tactical Chat Mode Toggle
+        self.chat_mode = "casual"
+        self.btn_mode_toggle = QPushButton("💬 Casual Chat")
+        self.btn_mode_toggle.setToolTip("Click to toggle: Casual Chat, Tactical AI, or Adaptive")
+        self.btn_mode_toggle.clicked.connect(self._toggle_chat_mode)
+        top_layout.addWidget(self.btn_mode_toggle)
+
         self.btn_copy_last = QPushButton("📋 Copy Response")
         self.btn_copy_last.setToolTip("Copy the last AI response to clipboard")
         self.btn_copy_last.clicked.connect(self._copy_last_response)
@@ -375,6 +382,7 @@ class ChatPage(QWidget):
             messages=msg_payload,
             memories=relevant_memories,
             document_context=self.active_document_context,
+            chat_mode=self.chat_mode,
             parent=self
         )
         self.ai_worker.chunk_received.connect(self._on_chunk_received)
@@ -433,6 +441,17 @@ class ChatPage(QWidget):
         self.btn_send.show()
         self.input_field.setEnabled(True)
         self.input_field.setFocus()
+
+    def _toggle_chat_mode(self):
+        modes = ["casual", "tactical", "auto"]
+        idx = (modes.index(self.chat_mode) + 1) % len(modes)
+        self.chat_mode = modes[idx]
+        labels = {
+            "casual": "💬 Casual Chat",
+            "tactical": "⚡ Tactical AI",
+            "auto": "✨ Adaptive"
+        }
+        self.btn_mode_toggle.setText(labels[self.chat_mode])
 
     def _copy_last_response(self):
         if not self.current_conversation:

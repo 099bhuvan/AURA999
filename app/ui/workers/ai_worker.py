@@ -17,12 +17,14 @@ class AIWorker(QThread):
         messages: List[Dict[str, str]],
         memories: Optional[List[str]] = None,
         document_context: Optional[str] = None,
+        chat_mode: str = "casual",
         parent=None
     ):
         super().__init__(parent)
         self.messages = messages
         self.memories = memories
         self.document_context = document_context
+        self.chat_mode = chat_mode
         self._is_cancelled = False
 
     def cancel(self):
@@ -43,6 +45,7 @@ class AIWorker(QThread):
                 cancel_check=check_cancel,
                 memories=self.memories,
                 document_context=self.document_context,
+                chat_mode=self.chat_mode,
             )
 
             if self._is_cancelled:

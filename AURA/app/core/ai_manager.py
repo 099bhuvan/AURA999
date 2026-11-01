@@ -130,16 +130,38 @@ class AIManager:
     def build_system_prompt(
         self,
         memories: Optional[List[str]] = None,
-        document_context: Optional[str] = None
+        document_context: Optional[str] = None,
+        chat_mode: str = "casual"
     ) -> str:
         """Construct full system prompt with assistant persona and injected knowledge."""
         name = config.assistant_name
-        prompt_parts = [
-            f"You are {name}, an advanced, futuristic AI personal assistant inspired by cinematic command centers.",
-            f"Your voice and demeanor are calm, intelligent, decisive, and technologically sophisticated.",
-            "Always format your answers with clean Markdown, clear headers, bullet points, and code blocks where helpful.",
-            "Be concise and actionable unless the user requests deep explanations."
-        ]
+
+        mode_instructions = {
+            "casual": (
+                f"You are {name}, an advanced AI companion and friendly personal assistant.\n"
+                "PERSONALITY & CONVERSATIONAL STYLE:\n"
+                "- Warm, witty, engaging, intelligent, and natural—like an articulate companion (a blend of JARVIS and a supportive friend).\n"
+                "- For casual chat (greetings, 'how are you', daily life, humor, stories, hobbies, casual thoughts, bantering): respond warmly in conversational prose. Do NOT output robotic status checklists, bulleted telemetry, or military headers for casual chit-chat!\n"
+                "- When the user asks for creative ideas, advice, or explanations, converse engagingly while keeping explanations clear and relatable.\n"
+                "- When technical questions or code are requested, provide sharp, well-structured solutions without losing your companionable warmth."
+            ),
+            "tactical": (
+                f"You are {name}, a high-precision tactical AI assistant and command center intelligence.\n"
+                "PERSONALITY & CONVERSATIONAL STYLE:\n"
+                "- Calm, disciplined, authoritative, and technologically sophisticated.\n"
+                "- Always prioritize brevity, precision, and actionable directives.\n"
+                "- Structure technical responses with clean Markdown, clear headers, concise bullet points, and code blocks."
+            ),
+            "auto": (
+                f"You are {name}, an advanced intelligent AI personal assistant.\n"
+                "PERSONALITY & CONVERSATIONAL STYLE:\n"
+                "- Seamlessly adaptive: when the user engages in casual conversation, banter, or greetings, respond naturally with friendly, conversational warmth.\n"
+                "- When the user issues commands, asks for code, summaries, or technical guidance, switch into clear, structured, actionable Markdown assistance."
+            )
+        }
+
+        directive = mode_instructions.get(chat_mode.lower(), mode_instructions["casual"])
+        prompt_parts = [directive]
 
         # Inject long-term memory facts if approved
         if memories:
@@ -166,6 +188,7 @@ class AIManager:
         cancel_check: Optional[Callable[[], bool]] = None,
         memories: Optional[List[str]] = None,
         document_context: Optional[str] = None,
+        chat_mode: str = "casual",
     ) -> Tuple[str, str]:
         """Generate AI response with system prompt and provider resolution.
         
@@ -174,10 +197,10 @@ class AIManager:
         """
         provider, provider_type = self.resolve_provider()
 
-        system_prompt = self.build_system_prompt(memories, document_context)
+        system_prompt = self.build_system_prompt(memories, document_context, chat_mode=chat_mode)
         formatted_messages = [{"role": "system", "content": system_prompt}] + messages
 
-        logger.info("Generating response using %s provider (%s)...", provider_type, type(provider).__name__)
+        logger.info("Generating response using %s provider (%s) [mode=%s]...", provider_type, type(provider).__name__, chat_mode)
         response_text = provider.generate_response(
             messages=formatted_messages,
             stream_callback=stream_callback,

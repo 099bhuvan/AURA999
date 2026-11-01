@@ -6,6 +6,8 @@ export SCREEN_WIDTH=${SCREEN_WIDTH:-1280}
 export SCREEN_HEIGHT=${SCREEN_HEIGHT:-800}
 export SCREEN_DEPTH=24
 export WEB_PORT=${PORT:-7860}
+export LIBGL_ALWAYS_SOFTWARE=1
+export QT_QPA_PLATFORM=xcb
 
 # Clean up any stale X locks or sockets from previous container runs/restarts
 rm -f /tmp/.X*-lock /tmp/.X11-unix/X* 2>/dev/null || true

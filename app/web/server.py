@@ -404,3 +404,6 @@ async def serve_index():
 
 
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+assets_dir = STATIC_DIR / "assets"
+assets_dir.mkdir(parents=True, exist_ok=True)
+app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")

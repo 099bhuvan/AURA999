@@ -855,6 +855,319 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* -------------------------------------------------------------
+           Home Neural Command Dock (Omni Chat, Automatic Mic, File Attachment)
+        ------------------------------------------------------------- */
+        .home-dock-container {
+            width: 100%;
+            max-width: 680px;
+            margin: 16px auto 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: relative;
+        }
+
+        .home-omni-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(13, 19, 34, 0.92);
+            border: 1.5px solid rgba(0, 240, 255, 0.45);
+            border-radius: 32px;
+            padding: 6px 10px 6px 14px;
+            box-shadow: 0 0 24px rgba(0, 240, 255, 0.2), 0 8px 32px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            gap: 8px;
+        }
+
+        .home-omni-bar:focus-within {
+            border-color: var(--cyan-primary);
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.45), 0 8px 36px rgba(0, 0, 0, 0.7);
+        }
+
+        .home-chat-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 14px;
+            padding: 8px 6px;
+            font-family: var(--font-ui);
+        }
+
+        .home-chat-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .dock-btn-icon {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            padding: 0;
+        }
+
+        .dock-btn-icon:hover {
+            background: rgba(0, 240, 255, 0.15);
+            border-color: var(--cyan-primary);
+            color: var(--cyan-primary);
+            transform: scale(1.05);
+        }
+
+        .dock-btn-mic {
+            background: rgba(138, 43, 226, 0.22);
+            border: 1px solid rgba(138, 43, 226, 0.6);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #e0e7ff;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+            padding: 0;
+        }
+
+        .dock-btn-mic:hover {
+            background: rgba(0, 240, 255, 0.25);
+            border-color: var(--cyan-primary);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+            transform: scale(1.08);
+        }
+
+        .dock-btn-mic.listening {
+            background: rgba(255, 0, 85, 0.35);
+            border-color: #ff0055;
+            color: #ff0055;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.85);
+            animation: pulse-mic 1.2s infinite;
+        }
+
+        @keyframes pulse-mic {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 12px rgba(255, 0, 85, 0.7); }
+            50% { transform: scale(1.12); box-shadow: 0 0 24px rgba(255, 0, 85, 1); }
+        }
+
+        .dock-btn-send {
+            background: linear-gradient(135deg, var(--cyan-primary), #0072ff);
+            color: #04060a;
+            font-weight: 800;
+            font-family: var(--font-display);
+            font-size: 11px;
+            letter-spacing: 1px;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .dock-btn-send:hover {
+            box-shadow: 0 0 18px rgba(0, 240, 255, 0.8);
+            transform: scale(1.04);
+        }
+
+        .home-dock-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0 6px;
+        }
+
+        .dock-audio-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--cyan-primary);
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 14px;
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.25);
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .dock-audio-toggle:hover {
+            background: rgba(0, 240, 255, 0.16);
+            border-color: var(--cyan-primary);
+        }
+
+        .home-attached-file {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(0, 240, 255, 0.12);
+            border: 1px solid var(--cyan-primary);
+            font-size: 12px;
+            color: #fff;
+            max-width: fit-content;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .file-remove-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 2px;
+        }
+        .file-remove-btn:hover { color: #ff0055; }
+
+        .home-voice-wave-banner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: rgba(255, 0, 85, 0.14);
+            border: 1px solid rgba(255, 0, 85, 0.5);
+            animation: fadeIn 0.25s ease;
+        }
+
+        .voice-wave-indicator {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 18px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            height: 6px;
+            background: #ff0055;
+            border-radius: 3px;
+            animation: wave-bounce 0.8s ease-in-out infinite alternate;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.6s; }
+
+        @keyframes wave-bounce {
+            0% { height: 4px; }
+            100% { height: 18px; }
+        }
+
+        .voice-status-label {
+            font-size: 12px;
+            font-family: var(--font-mono);
+            color: #ff5588;
+            font-weight: 700;
+        }
+
+        .voice-cancel-btn {
+            margin-left: auto;
+            background: transparent;
+            border: none;
+            color: #ff5588;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+        }
+
+        .home-response-card {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 14px;
+            animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .home-response-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .response-title-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .home-user-query-echo {
+            font-size: 12.5px;
+            color: var(--cyan-primary);
+            font-weight: 600;
+            background: rgba(0, 240, 255, 0.05);
+            padding: 6px 12px;
+            border-left: 2.5px solid var(--cyan-primary);
+            border-radius: 0 6px 6px 0;
+        }
+
+        .home-response-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            user-select: text;
+            white-space: pre-wrap;
+            max-height: 380px;
+            overflow-y: auto;
+        }
+
+        .dock-action-small {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            font-size: 11px;
+            padding: 4px 9px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .dock-action-small:hover {
+            color: #fff;
+            border-color: var(--cyan-primary);
+            background: rgba(0, 240, 255, 0.12);
+        }
+
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 0;
+        }
+        .typing-indicator span {
+            width: 7px;
+            height: 7px;
+            background: var(--cyan-primary);
+            border-radius: 50%;
+            animation: typing-bounce 1s infinite alternate;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing-bounce {
+            0% { transform: translateY(0); opacity: 0.3; }
+            100% { transform: translateY(-7px); opacity: 1; }
+        }
+
         @media (max-width: 900px) {
             #top-header {
                 padding: 0 12px;
@@ -1035,10 +1348,93 @@
                 </div>
 
                 <div class="home-actions">
-                    <button class="btn-primary" onclick="switchPage('voice')">🎙 START VOICE INTERACTION</button>
-                    <button onclick="switchPage('chat')">💬 OPEN CHAT</button>
-                    <button onclick="switchPage('documents')">📄 INGEST DOCUMENT</button>
+                    <button class="btn-primary" onclick="toggleAutomaticMic()">🎙 SPEAK WITH AURA</button>
+                    <button onclick="document.getElementById('homeFileInput').click()">📁 ATTACH FILE</button>
+                    <button onclick="switchPage('chat')">💬 FULL CHAT</button>
                     <button onclick="switchPage('reminders')">⏰ NEW REMINDER</button>
+                </div>
+
+                <!-- Home Neural Command Dock (Omni Chat, Automatic Mic & Document Ingestion) -->
+                <div class="home-dock-container">
+                    <!-- Attached File Badge Indicator -->
+                    <div id="homeAttachedFileBanner" class="home-attached-file" style="display: none;">
+                        <span class="file-icon">📄</span>
+                        <span id="homeAttachedFileName" class="file-name">filename.pdf</span>
+                        <span id="homeAttachedFileSize" class="file-size">(0 KB)</span>
+                        <button class="file-remove-btn" onclick="removeHomeAttachedFile()" title="Remove file">✕</button>
+                    </div>
+
+                    <!-- Live Voice Recognition Wave Overlay -->
+                    <div id="homeVoiceWaveBanner" class="home-voice-wave-banner" style="display: none;">
+                        <div class="voice-wave-indicator">
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                            <span class="wave-bar"></span>
+                        </div>
+                        <span class="voice-status-label">🎙 Listening... speak now (Automatic Send)</span>
+                        <button class="voice-cancel-btn" onclick="stopAutomaticMic()" title="Cancel Mic">✕</button>
+                    </div>
+
+                    <!-- Omnibar Input Box -->
+                    <div class="home-omni-bar">
+                        <!-- Hidden File Input -->
+                        <input type="file" id="homeFileInput" style="display: none;" onchange="handleHomeFileInput(event)" accept=".pdf,.docx,.txt,.md,.png,.jpg,.jpeg">
+                        
+                        <!-- File Attach Button -->
+                        <button type="button" class="dock-btn-icon" onclick="document.getElementById('homeFileInput').click()" title="Attach Document / File" aria-label="Attach File">
+                            <span style="font-size: 16px;">📎</span>
+                        </button>
+
+                        <!-- Main Chat & Voice Input Box -->
+                        <input type="text" id="homeChatInput" class="home-chat-input" placeholder="Ask AURA anything, speak with mic, or attach documents..." onkeydown="if(event.key==='Enter') sendHomeMessage()">
+
+                        <!-- Automatic Mic Button -->
+                        <button type="button" id="homeMicBtn" class="dock-btn-mic" onclick="toggleAutomaticMic()" title="Toggle Automatic Microphone" aria-label="Microphone">
+                            <span class="mic-icon" style="font-size: 16px;">🎙</span>
+                        </button>
+
+                        <!-- Send Button -->
+                        <button type="button" id="homeSendBtn" class="dock-btn-send" onclick="sendHomeMessage()" title="Send Directive" aria-label="Send">
+                            <span>SEND ◈</span>
+                        </button>
+                    </div>
+
+                    <!-- Mode Switcher & Quick Pills -->
+                    <div class="home-dock-footer">
+                        <div class="chat-mode-group">
+                            <button class="mode-pill active" id="homeModeCasual" onclick="setHomeChatMode('casual')">💬 Casual Chat</button>
+                            <button class="mode-pill" id="homeModeTactical" onclick="setHomeChatMode('tactical')">⚡ Tactical AI</button>
+                            <button class="mode-pill" id="homeModeAuto" onclick="setHomeChatMode('auto')">✨ Adaptive</button>
+                        </div>
+                        <div class="dock-audio-toggle" onclick="toggleAutoSpeech()" title="Toggle Spoken Response via Audio Synthesis">
+                            <span id="autoSpeechIcon">🔊</span>
+                            <span id="autoSpeechLabel">Auto-Voice: ON</span>
+                        </div>
+                    </div>
+
+                    <!-- Live Inline Neural Response Card -->
+                    <div id="homeResponseCard" class="glass-panel glow home-response-card" style="display: none;">
+                        <div class="home-response-header">
+                            <div class="response-title-group">
+                                <span class="status-dot"></span>
+                                <span style="font-weight: 700; color: #fff; font-size: 13px;">AURA NEURAL SYNAPSE</span>
+                            </div>
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                <button class="dock-action-small" onclick="replayHomeAudio()" title="Speak Again">🔊 Speak</button>
+                                <button class="dock-action-small" onclick="copyHomeResponse()" title="Copy Response">📋 Copy</button>
+                                <button class="dock-action-small" onclick="switchPage('chat')" title="View in Neural Chat">💬 Open in Chat →</button>
+                                <button class="dock-action-small" onclick="closeHomeResponse()" title="Dismiss">✕</button>
+                            </div>
+                        </div>
+                        <div id="homeUserQueryEcho" class="home-user-query-echo"></div>
+                        <div id="homeResponseContent" class="home-response-content">
+                            <div class="typing-indicator">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="home-panels-grid">
@@ -1794,14 +2190,34 @@
         const res = await fetch('/api/conversations');
         const list = await res.json();
         const container = document.getElementById('chatSessionsList');
-        container.innerHTML = '';
-        list.forEach(c => {
-            const div = document.createElement('div');
-            div.className = `chat-session-item ${c.id === currentSessionId ? 'active' : ''}`;
-            div.innerText = `💬  ${c.title}`;
-            div.onclick = () => selectSession(c.id, c.title);
-            container.appendChild(div);
-        });
+        if (container) {
+            container.innerHTML = '';
+            list.forEach(c => {
+                const div = document.createElement('div');
+                div.className = `chat-session-item ${c.id === currentSessionId ? 'active' : ''}`;
+                div.innerText = `💬  ${c.title}`;
+                div.onclick = () => selectSession(c.id, c.title);
+                container.appendChild(div);
+            });
+        }
+
+        // Update Recent Neural Sessions on Home Dashboard
+        const homeRecent = document.getElementById('homeRecentSessions');
+        if (homeRecent) {
+            homeRecent.innerHTML = '';
+            if (!list || list.length === 0) {
+                homeRecent.innerHTML = '<div style="color: var(--text-muted); font-size: 13px;">No active sessions. Speak or type above to begin!</div>';
+            } else {
+                list.slice(0, 4).forEach(c => {
+                    const row = document.createElement('div');
+                    row.style.cssText = 'padding: 8px 12px; background: rgba(0, 240, 255, 0.04); border: 1px solid var(--border-subtle); border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s;';
+                    row.innerHTML = `<span style="color: #fff; font-size: 13px; font-weight: 500;">💬 ${c.title}</span><span style="color: var(--cyan-primary); font-size: 11px; font-family: var(--font-mono);">OPEN →</span>`;
+                    row.onclick = () => { selectSession(c.id, c.title); switchPage('chat'); };
+                    homeRecent.appendChild(row);
+                });
+            }
+        }
+
         if (list.length > 0 && !currentSessionId) {
             selectSession(list[0].id, list[0].title);
         }
@@ -1961,78 +2377,374 @@
     }
 
     // -------------------------------------------------------------------------
-    // Voice Subsystem (HTML5 Web Speech API)
+    // Home Neural Command Dock & Automatic Voice Subsystem
     // -------------------------------------------------------------------------
-    let isRecording = false;
-    function toggleVoiceRecognition() {
-        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-            alert('Web Speech API is not supported in this browser. Please use Google Chrome or Microsoft Edge.');
-            return;
-        }
+    let autoSpeechEnabled = true;
+    let homeAttachedFile = null;
+    let isAutoMicActive = false;
+    let autoMicSilenceTimer = null;
+    let speechDetectedInSession = false;
+    let lastHomeResponseText = '';
 
-        if (isRecording) {
-            speechRecognition.stop();
-            isRecording = false;
-            document.getElementById('btnVoiceToggle').innerText = '🎙 START RECORDING';
-            document.getElementById('btnVoiceToggle').className = 'btn-primary';
-            setCoreState('idle');
-            return;
-        }
+    function setHomeChatMode(mode) {
+        setChatMode(mode);
+        document.querySelectorAll('#homeModeCasual, #homeModeTactical, #homeModeAuto').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'casual') document.getElementById('homeModeCasual')?.classList.add('active');
+        if (mode === 'tactical') document.getElementById('homeModeTactical')?.classList.add('active');
+        if (mode === 'auto') document.getElementById('homeModeAuto')?.classList.add('active');
+    }
 
+    function toggleAutoSpeech() {
+        autoSpeechEnabled = !autoSpeechEnabled;
+        const icon = document.getElementById('autoSpeechIcon');
+        const label = document.getElementById('autoSpeechLabel');
+        if (icon) icon.innerText = autoSpeechEnabled ? '🔊' : '🔇';
+        if (label) label.innerText = autoSpeechEnabled ? 'Auto-Voice: ON' : 'Auto-Voice: OFF';
+        if (!autoSpeechEnabled) stopAllSpeech();
+    }
+
+    async function handleHomeFileInput(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const banner = document.getElementById('homeAttachedFileBanner');
+        const nameEl = document.getElementById('homeAttachedFileName');
+        const sizeEl = document.getElementById('homeAttachedFileSize');
+
+        if (banner) banner.style.display = 'inline-flex';
+        if (nameEl) nameEl.innerText = file.name;
+        if (sizeEl) sizeEl.innerText = '(Uploading...)';
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const res = await fetch('/api/documents/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            if (data.success && data.document) {
+                homeAttachedFile = {
+                    id: data.document.id,
+                    filename: data.document.filename,
+                    size: data.document.file_size
+                };
+                const kb = Math.round((file.size / 1024) * 10) / 10;
+                if (sizeEl) sizeEl.innerText = `(${kb} KB • Ingested)`;
+            } else {
+                if (sizeEl) sizeEl.innerText = '(Upload failed)';
+            }
+        } catch (err) {
+            console.error('File upload error:', err);
+            if (sizeEl) sizeEl.innerText = '(Upload error)';
+        }
+    }
+
+    function removeHomeAttachedFile() {
+        homeAttachedFile = null;
+        const input = document.getElementById('homeFileInput');
+        if (input) input.value = '';
+        const banner = document.getElementById('homeAttachedFileBanner');
+        if (banner) banner.style.display = 'none';
+    }
+
+    async function toggleAutomaticMic() {
+        if (isAutoMicActive) {
+            stopAutomaticMic();
+        } else {
+            await startAutomaticMic();
+        }
+    }
+
+    async function startAutomaticMic() {
         const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        speechRecognition = new SpeechRec();
-        speechRecognition.continuous = false;
-        speechRecognition.interimResults = false;
+        if (!SpeechRec) {
+            alert('Web Speech recognition is not supported in this browser. Please open AURA in Google Chrome, Microsoft Edge, or Safari.');
+            return;
+        }
 
-        speechRecognition.onstart = () => {
-            isRecording = true;
-            document.getElementById('btnVoiceToggle').innerText = '⏹ STOP RECORDING';
-            document.getElementById('btnVoiceToggle').className = 'btn-danger';
-            document.getElementById('headerMicChip').innerText = '🎙 MIC: LISTENING';
-            setCoreState('listening');
-        };
+        // Cleanly ensure microphone permission is granted in browser
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(t => t.stop());
+            } catch (err) {
+                console.warn('Microphone permission check:', err);
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    alert('Microphone permission was denied. Please allow microphone access in your browser address bar.');
+                    return;
+                }
+            }
+        }
 
-        speechRecognition.onresult = async (e) => {
-            const text = e.results[0][0].transcript;
-            appendVoiceTranscript('USER', text);
-            setCoreState('thinking');
+        if (speechRecognition) {
+            try { speechRecognition.abort(); } catch (e) {}
+            speechRecognition = null;
+        }
 
-            // Send to chat
+        speechDetectedInSession = false;
+        try {
+            speechRecognition = new SpeechRec();
+            speechRecognition.continuous = true;
+            speechRecognition.interimResults = true;
+            speechRecognition.maxAlternatives = 1;
+            speechRecognition.lang = navigator.language || 'en-US';
+
+            speechRecognition.onstart = () => {
+                isAutoMicActive = true;
+                const micBtn = document.getElementById('homeMicBtn');
+                if (micBtn) micBtn.classList.add('listening');
+
+                const banner = document.getElementById('homeVoiceWaveBanner');
+                if (banner) banner.style.display = 'flex';
+
+                const statusLabel = document.querySelector('#homeVoiceWaveBanner .voice-status-label');
+                if (statusLabel) statusLabel.innerText = '🎙 Listening... speak your directive (Auto-Send on pause)';
+
+                const headerMic = document.getElementById('headerMicChip');
+                if (headerMic) headerMic.innerText = '🎙 MIC: ACTIVE';
+
+                const voiceToggle = document.getElementById('btnVoiceToggle');
+                if (voiceToggle) {
+                    voiceToggle.innerText = '⏹ STOP RECORDING';
+                    voiceToggle.className = 'btn-danger';
+                }
+
+                setCoreState('listening');
+            };
+
+            speechRecognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                const heard = (finalTranscript || interimTranscript).trim();
+                if (heard) {
+                    speechDetectedInSession = true;
+                    const homeInput = document.getElementById('homeChatInput');
+                    if (homeInput) homeInput.value = heard;
+
+                    const statusLabel = document.querySelector('#homeVoiceWaveBanner .voice-status-label');
+                    if (statusLabel) statusLabel.innerText = `🎙 Hearing: "${heard.slice(-38)}"`;
+
+                    // Also echo to voice page if active
+                    const voicePage = document.getElementById('page-voice');
+                    if (voicePage && voicePage.classList.contains('active')) {
+                        const transcriptBox = document.getElementById('voiceTranscript');
+                        if (transcriptBox && finalTranscript) {
+                            appendVoiceTranscript('USER', finalTranscript);
+                        }
+                    }
+                }
+
+                // Automatic silence detection: 1.4s of silence triggers auto-send
+                if (autoMicSilenceTimer) clearTimeout(autoMicSilenceTimer);
+                autoMicSilenceTimer = setTimeout(() => {
+                    const currentText = document.getElementById('homeChatInput')?.value.trim();
+                    if (currentText && isAutoMicActive) {
+                        console.log('Automatic silence detected, sending directive:', currentText);
+                        stopAutomaticMic();
+                        sendHomeMessage();
+                    }
+                }, 1400);
+            };
+
+            speechRecognition.onerror = (event) => {
+                console.warn('SpeechRecognition error:', event.error);
+                const statusLabel = document.querySelector('#homeVoiceWaveBanner .voice-status-label');
+                if (event.error === 'no-speech') {
+                    if (statusLabel) statusLabel.innerText = '🎙 No speech detected. Listening...';
+                    return;
+                }
+                if (event.error === 'not-allowed') {
+                    if (statusLabel) statusLabel.innerText = '⚠️ Microphone blocked. Check browser permissions.';
+                } else {
+                    if (statusLabel) statusLabel.innerText = `⚠️ Speech error: ${event.error}`;
+                }
+                setTimeout(() => {
+                    if (isAutoMicActive && event.error !== 'no-speech') stopAutomaticMic();
+                }, 2200);
+            };
+
+            speechRecognition.onend = () => {
+                const currentText = document.getElementById('homeChatInput')?.value.trim();
+                if (isAutoMicActive && speechDetectedInSession && currentText) {
+                    stopAutomaticMic();
+                    sendHomeMessage();
+                } else if (isAutoMicActive) {
+                    stopAutomaticMic();
+                }
+            };
+
+            speechRecognition.start();
+        } catch (err) {
+            console.error('Failed to start speech recognition:', err);
+            stopAutomaticMic();
+        }
+    }
+
+    function stopAutomaticMic() {
+        isAutoMicActive = false;
+        if (autoMicSilenceTimer) {
+            clearTimeout(autoMicSilenceTimer);
+            autoMicSilenceTimer = null;
+        }
+
+        if (speechRecognition) {
+            try { speechRecognition.stop(); } catch (e) {}
+        }
+
+        const micBtn = document.getElementById('homeMicBtn');
+        if (micBtn) micBtn.classList.remove('listening');
+
+        const banner = document.getElementById('homeVoiceWaveBanner');
+        if (banner) banner.style.display = 'none';
+
+        const headerMic = document.getElementById('headerMicChip');
+        if (headerMic) headerMic.innerText = '🎙 MIC: IDLE';
+
+        const voiceToggle = document.getElementById('btnVoiceToggle');
+        if (voiceToggle) {
+            voiceToggle.innerText = '🎙 START RECORDING';
+            voiceToggle.className = 'btn-primary';
+        }
+
+        if (coreState === 'listening') {
+            setCoreState('idle');
+        }
+    }
+
+    // Connect voice tab button to automatic mic
+    function toggleVoiceRecognition() {
+        toggleAutomaticMic();
+    }
+
+    async function sendHomeMessage() {
+        if (isAutoMicActive) stopAutomaticMic();
+
+        const input = document.getElementById('homeChatInput');
+        let text = input ? input.value.trim() : '';
+
+        if (!text && homeAttachedFile) {
+            text = `Please analyze and summarize the attached document: ${homeAttachedFile.filename}`;
+        }
+
+        if (!text) {
+            if (input) input.focus();
+            return;
+        }
+
+        if (input) input.value = '';
+
+        // Display response card
+        const card = document.getElementById('homeResponseCard');
+        const echo = document.getElementById('homeUserQueryEcho');
+        const content = document.getElementById('homeResponseContent');
+        if (card) card.style.display = 'block';
+        if (echo) {
+            echo.innerHTML = `<span style="color:var(--cyan-primary);font-weight:700;">DIRECTIVE:</span> "${text}"` + 
+                             (homeAttachedFile ? ` <span class="chip" style="margin-left:8px;font-size:11px;">📎 ${homeAttachedFile.filename}</span>` : '');
+        }
+        if (content) {
+            content.innerHTML = `<div class="typing-indicator"><span></span><span></span><span></span></div><span style="color:var(--text-secondary);font-size:12px;margin-left:10px;">AURA synthesizing neural response...</span>`;
+        }
+        setCoreState('thinking');
+
+        // Scroll response card into view smoothly
+        card?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        // Ensure session exists
+        if (!currentSessionId) {
+            try {
+                const sRes = await fetch('/api/conversations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: text.slice(0, 30) || 'Home Directive' })
+                });
+                const sData = await sRes.json();
+                currentSessionId = sData.id;
+            } catch (e) {
+                console.error('Session create error:', e);
+            }
+        }
+
+        let promptToSend = text;
+        if (homeAttachedFile) {
+            promptToSend = `[Attached Document: ${homeAttachedFile.filename} (ID: ${homeAttachedFile.id})]\n${text}`;
+        }
+
+        try {
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     conversation_id: currentSessionId,
-                    message: text,
+                    message: promptToSend,
                     chat_mode: currentChatMode
                 })
             });
             const data = await res.json();
-            if (data.success) {
-                appendVoiceTranscript('AURA', data.reply);
-                speakAloud(data.reply);
+            if (data.success && data.reply) {
+                lastHomeResponseText = data.reply;
+                if (content) content.innerHTML = formatMarkdown(data.reply);
+                setCoreState('idle');
+
+                if (autoSpeechEnabled) {
+                    speakAloud(data.reply);
+                }
+            } else {
+                const err = data.detail || 'Neural synthesis error';
+                if (content) content.innerHTML = `<span style="color:#ff0055;">⚠️ Neural synthesis failed: ${err}</span>`;
+                setCoreState('error');
             }
-        };
+        } catch (err) {
+            if (content) content.innerHTML = `<span style="color:#ff0055;">⚠️ Connection error: ${err.message}</span>`;
+            setCoreState('error');
+        }
 
-        speechRecognition.onerror = (e) => {
-            appendVoiceTranscript('ERROR', e.error);
-            setCoreState('idle');
-            isRecording = false;
-            document.getElementById('btnVoiceToggle').innerText = '🎙 START RECORDING';
-        };
+        // Refresh recent sessions
+        loadChatSessions();
+    }
 
-        speechRecognition.onend = () => {
-            isRecording = false;
-            document.getElementById('btnVoiceToggle').innerText = '🎙 START RECORDING';
-            document.getElementById('headerMicChip').innerText = '🎙 MIC: IDLE';
-            if (coreState === 'listening') setCoreState('idle');
-        };
+    function replayHomeAudio() {
+        if (lastHomeResponseText) {
+            speakAloud(lastHomeResponseText);
+        }
+    }
 
-        speechRecognition.start();
+    async function copyHomeResponse() {
+        if (!lastHomeResponseText) return;
+        try {
+            await navigator.clipboard.writeText(lastHomeResponseText);
+            const btn = event?.currentTarget;
+            if (btn) {
+                const prev = btn.innerText;
+                btn.innerText = '✓ Copied!';
+                setTimeout(() => { btn.innerText = prev; }, 2000);
+            }
+        } catch (e) {
+            console.warn('Copy failed', e);
+        }
+    }
+
+    function closeHomeResponse() {
+        const card = document.getElementById('homeResponseCard');
+        if (card) card.style.display = 'none';
+        stopAllSpeech();
     }
 
     function appendVoiceTranscript(speaker, text) {
         const box = document.getElementById('voiceTranscript');
+        if (!box) return;
         const color = speaker === 'AURA' ? 'var(--cyan-primary)' : '#38bdf8';
         box.innerHTML += `<div style="margin-top: 10px;"><span style="color: ${color}; font-weight: 700;">[${speaker}]</span> <span style="color: #fff;">${text}</span></div>`;
         box.scrollTop = box.scrollHeight;
@@ -2041,10 +2753,13 @@
     function speakAloud(text) {
         if (!('speechSynthesis' in window)) return;
         window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(text.replace(/[*`#]/g, ''));
-        utter.rate = parseFloat(document.getElementById('voiceRateSlider').value || '1.0');
+        const cleanText = text.replace(/[*`#_~>\[\]\(\)]/g, ' ').replace(/\s+/g, ' ').trim();
+        const utter = new SpeechSynthesisUtterance(cleanText);
+        const slider = document.getElementById('voiceRateSlider');
+        utter.rate = slider ? parseFloat(slider.value || '1.0') : 1.0;
         utter.onstart = () => setCoreState('speaking');
         utter.onend = () => setCoreState('idle');
+        utter.onerror = () => setCoreState('idle');
         window.speechSynthesis.speak(utter);
     }
 

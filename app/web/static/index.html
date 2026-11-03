@@ -202,8 +202,8 @@
         }
 
         .brand-vortex-thumb {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             overflow: hidden;
             position: relative;
@@ -215,13 +215,27 @@
             background: #000;
             flex-shrink: 0;
         }
-        .brand-vortex-thumb img {
-            width: 68px;
-            height: 68px;
-            object-fit: cover;
-            object-position: 50% 36%;
-            animation: cosmic-spin 30s linear infinite;
+
+        .mini-singularity-accretion {
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #00f0ff, #8a2be2, #d946ef, #0072ff, #00f0ff);
+            animation: cosmic-spin 4s linear infinite;
+            filter: blur(1.5px);
         }
+
+        .mini-singularity-void {
+            position: relative;
+            z-index: 2;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #000000;
+            border: 1px solid rgba(0, 240, 255, 0.9);
+            box-shadow: 0 0 5px rgba(0, 240, 255, 0.8);
+        }
+
         @keyframes cosmic-spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -427,49 +441,34 @@
             margin-top: 4px;
         }
 
-        /* Cosmic Hero Visual (Image 2 Exact Match) */
-        .cosmic-hero-stage {
+        /* Borderless Pure-Code Cosmic Singularity Stage */
+        .cosmic-stage-borderless {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 10px 0 20px;
-        }
-
-        .cosmic-art-wrapper {
+            margin: 0 auto;
             position: relative;
-            border-radius: 18px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 240, 255, 0.4);
-            box-shadow: 0 0 32px rgba(0, 240, 255, 0.3), 0 0 65px rgba(138, 43, 226, 0.3);
-            max-width: 560px;
             width: 100%;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            background: #020306;
+            max-width: 720px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
         }
 
-        .cosmic-art-wrapper:hover {
-            box-shadow: 0 0 45px rgba(0, 240, 255, 0.5), 0 0 85px rgba(217, 70, 239, 0.4);
-        }
-
-        .cosmic-hero-img {
+        .cosmic-canvas-purecode {
             width: 100%;
+            max-width: 680px;
             height: auto;
             display: block;
-            pointer-events: none;
-            transition: filter 0.4s ease;
-        }
-
-        .cosmic-hero-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            background: transparent;
             cursor: grab;
+            user-select: none;
+            filter: drop-shadow(0 0 24px rgba(0, 240, 255, 0.28)) drop-shadow(0 0 50px rgba(138, 43, 226, 0.25));
+            transition: filter 0.3s ease;
         }
 
-        .cosmic-hero-canvas:active {
+        .cosmic-canvas-purecode:active {
             cursor: grabbing;
         }
 
@@ -737,7 +736,8 @@
     <nav id="sidebar">
         <div class="brand-header">
             <div class="brand-vortex-thumb">
-                <img src="/assets/aura_universe.jpg" alt="AURA Singularity">
+                <div class="mini-singularity-accretion"></div>
+                <div class="mini-singularity-void"></div>
             </div>
             <span class="brand-title">AURA</span>
             <span class="brand-tag">COSMIC AI</span>
@@ -787,11 +787,8 @@
                     <div class="page-sub">Tactical Neural Assistant • Systems nominal • Standby for command</div>
                 </div>
 
-                <div class="cosmic-hero-stage" id="coreWrapper">
-                    <div class="cosmic-art-wrapper" id="cosmicArtCard">
-                        <img src="/assets/aura_universe.jpg" alt="AURA Cosmic Black Hole" class="cosmic-hero-img" id="heroUniverseImg">
-                        <canvas id="auraCanvas" width="560" height="312" class="cosmic-hero-canvas"></canvas>
-                    </div>
+                <div class="cosmic-stage-borderless" id="coreWrapper">
+                    <canvas id="auraCanvas" width="700" height="420" class="cosmic-canvas-purecode"></canvas>
                     <div class="cosmic-telemetry-strip">
                         <span class="cosmic-pill" id="coreStateText">
                             <span class="cosmic-dot"></span> COSMIC SINGULARITY ONLINE
@@ -1074,11 +1071,13 @@
     let activeDocId = null;
     let speechRecognition = null;
 
-    // Cosmic Black Hole Singularity & Universe Core (Image 2 Match)
+    // -------------------------------------------------------------------------
+    // Pure Code Procedural Cosmic Universe & Singularity Core (Zero Borders, Zero Watermark)
+    // -------------------------------------------------------------------------
     const canvas = document.getElementById('auraCanvas');
     const ctx = canvas.getContext('2d');
 
-    const PARTICLE_COUNT = 150;
+    const PARTICLE_COUNT = 240;
     const particles = [];
     for (let i = 0; i < PARTICLE_COUNT; i++) {
         particles.push(spawnCosmicParticle());
@@ -1086,15 +1085,17 @@
 
     function spawnCosmicParticle(startFar = false) {
         const angle = Math.random() * Math.PI * 2;
-        const dist = startFar ? (130 + Math.random() * 45) : (26 + Math.random() * 145);
+        const dist = startFar ? (140 + Math.random() * 60) : (28 + Math.random() * 160);
         const colorSeed = Math.random();
         return {
             angle,
             dist,
-            baseSpeed: 0.012 + Math.random() * 0.024,
-            infallSpeed: 0.16 + Math.random() * 0.38,
-            size: 0.8 + Math.random() * 2.3,
-            colorType: colorSeed > 0.6 ? 1 : (colorSeed > 0.25 ? 2 : 3),
+            prevAngle: angle,
+            prevDist: dist,
+            baseSpeed: 0.012 + Math.random() * 0.025,
+            infallSpeed: 0.18 + Math.random() * 0.42,
+            size: 0.8 + Math.random() * 2.6,
+            colorType: colorSeed > 0.65 ? 1 : (colorSeed > 0.3 ? 2 : (colorSeed > 0.1 ? 3 : 4)), // 1: cyan, 2: magenta, 3: violet, 4: white
             alpha: 0.35 + Math.random() * 0.65
         };
     }
@@ -1102,39 +1103,39 @@
     let mouseTiltX = 0;
     let mouseTiltY = 0;
 
-    const artCard = document.getElementById('cosmicArtCard');
     canvas.addEventListener('mousemove', e => {
         const rect = canvas.getBoundingClientRect();
         mouseTiltX = (e.clientX - rect.left) / rect.width - 0.5;
         mouseTiltY = (e.clientY - rect.top) / rect.height - 0.5;
-        if (artCard) {
-            artCard.style.transform = `perspective(900px) rotateY(${mouseTiltX * 12}deg) rotateX(${-mouseTiltY * 12}deg)`;
-        }
+        canvas.style.transform = `perspective(900px) rotateY(${mouseTiltX * 10}deg) rotateX(${-mouseTiltY * 10}deg)`;
     });
     canvas.addEventListener('mouseleave', () => {
         mouseTiltX = 0;
         mouseTiltY = 0;
-        if (artCard) artCard.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg)';
+        canvas.style.transform = 'perspective(900px) rotateY(0deg) rotateX(0deg)';
     });
+
+    let globalCosmicTime = 0;
 
     function renderAuraCore() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Exact center of the black hole void in the 560x312 visual
+        // Singularity core center
         const cx = canvas.width / 2;
-        const cy = canvas.height * 0.418;
+        const cy = 185;
 
-        let primaryColor = '#00f0ff'; // Cyan
-        let violetColor = '#a855f7';  // Violet
+        // Dynamics & state colors
+        let primaryColor = '#00f0ff'; // Neon Cyan
+        let violetColor = '#8a2be2';  // Electric Violet
         let magentaColor = '#d946ef'; // Magenta
-        let spinRate = 0.025;
+        let spinRate = 0.024;
         let pulseSpeed = 0.035;
 
         if (coreState === 'thinking') {
             primaryColor = '#00f0ff';
-            violetColor = '#c026d3';
+            violetColor = '#a855f7';
             magentaColor = '#f43f5e';
-            spinRate = 0.075;
+            spinRate = 0.065;
             pulseSpeed = 0.08;
             coreRotation1 += 3.2;
         } else if (coreState === 'listening') {
@@ -1161,19 +1162,174 @@
             coreRotation1 += 0.8;
         }
 
+        // Apply drag inertia
+        userRotation += spinVelocity;
+        spinVelocity *= 0.95;
+
+        globalCosmicTime += 0.018;
         corePulse = (corePulse + pulseSpeed) % (Math.PI * 2);
         const pulse = (Math.sin(corePulse) + 1) / 2;
 
-        const eventHorizonRadius = 20 + pulse * 2.5;
+        const eventHorizonRadius = 26 + pulse * 2.2;
 
+        // -------------------------------------------------------------
+        // LAYER 1: Deep Space Ambient Glow (Radial falloff to 0 opacity)
+        // -------------------------------------------------------------
+        ctx.save();
+        const deepGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, 330);
+        deepGrad.addColorStop(0, 'rgba(138, 43, 226, 0.22)');
+        deepGrad.addColorStop(0.35, 'rgba(0, 114, 255, 0.12)');
+        deepGrad.addColorStop(0.7, 'rgba(217, 70, 239, 0.05)');
+        deepGrad.addColorStop(1, 'rgba(4, 6, 10, 0)');
+        ctx.fillStyle = deepGrad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+
+        // -------------------------------------------------------------
+        // LAYER 2: Ethereal Cosmic Eye Wave Filaments (No hard borders!)
+        // -------------------------------------------------------------
+        ctx.save();
+        for (let layer = 0; layer < 5; layer++) {
+            ctx.beginPath();
+            const waveMorph = Math.sin(globalCosmicTime * 1.5 + layer * 1.1) * 10;
+            // Eye shape upper curve
+            ctx.moveTo(cx - 320, cy);
+            ctx.bezierCurveTo(
+                cx - 150, cy - 135 + waveMorph + layer * 4,
+                cx + 150, cy - 135 - waveMorph + layer * 4,
+                cx + 320, cy
+            );
+            // Eye shape lower curve
+            ctx.bezierCurveTo(
+                cx + 150, cy + 135 - waveMorph - layer * 4,
+                cx - 150, cy + 135 + waveMorph - layer * 4,
+                cx - 320, cy
+            );
+            ctx.closePath();
+
+            const waveGrad = ctx.createRadialGradient(cx, cy, 40, cx, cy, 310);
+            waveGrad.addColorStop(0, `rgba(138, 43, 226, ${0.11 - layer * 0.018})`);
+            waveGrad.addColorStop(0.5, `rgba(0, 240, 255, ${0.07 - layer * 0.012})`);
+            waveGrad.addColorStop(0.85, `rgba(217, 70, 239, ${0.03 - layer * 0.005})`);
+            waveGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = waveGrad;
+            ctx.fill();
+        }
+
+        // Delicate luminous filament contour lines
+        for (let i = 0; i < 6; i++) {
+            ctx.beginPath();
+            const yDist = (i - 2.5) * 24;
+            const amp = Math.sin(globalCosmicTime * 1.8 + i) * 7;
+            ctx.moveTo(cx - 290, cy + yDist * 0.25);
+            ctx.bezierCurveTo(
+                cx - 120, cy + yDist + amp,
+                cx + 120, cy + yDist - amp,
+                cx + 290, cy + yDist * 0.25
+            );
+            ctx.strokeStyle = (i % 2 === 0) ? 'rgba(0, 240, 255, 0.18)' : 'rgba(168, 85, 247, 0.16)';
+            ctx.lineWidth = 1.3;
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // -------------------------------------------------------------
+        // LAYER 3: Cybernetic Tech Coordinate Overlays (Code look)
+        // -------------------------------------------------------------
+        ctx.save();
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.22)';
+        ctx.fillStyle = 'rgba(0, 240, 255, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.font = '9px "JetBrains Mono", monospace';
+
+        // Horizontal target lines
+        ctx.beginPath();
+        ctx.moveTo(cx - 280, cy); ctx.lineTo(cx - 250, cy);
+        ctx.moveTo(cx + 250, cy); ctx.lineTo(cx + 280, cy);
+        ctx.stroke();
+
+        // Tech coordinate notations
+        ctx.fillText('SYS.SINGULARITY // ONLINE', cx - 290, cy - 80);
+        ctx.fillText(`FLUX: ${(98.2 + pulse * 1.8).toFixed(1)}%`, cx - 290, cy - 66);
+        ctx.fillText('ACCRETION: 0.98c', cx + 190, cy - 80);
+        ctx.fillText('MASS: 4.3×10⁶ M☉', cx + 190, cy - 66);
+
+        // Tech grid corner brackets
+        ctx.beginPath();
+        ctx.moveTo(cx - 240, cy - 110); ctx.lineTo(cx - 225, cy - 110);
+        ctx.moveTo(cx - 240, cy - 110); ctx.lineTo(cx - 240, cy - 95);
+
+        ctx.moveTo(cx + 240, cy - 110); ctx.lineTo(cx + 225, cy - 110);
+        ctx.moveTo(cx + 240, cy - 110); ctx.lineTo(cx + 240, cy - 95);
+
+        ctx.moveTo(cx - 240, cy + 85); ctx.lineTo(cx - 225, cy + 85);
+        ctx.moveTo(cx - 240, cy + 85); ctx.lineTo(cx - 240, cy + 70);
+
+        ctx.moveTo(cx + 240, cy + 85); ctx.lineTo(cx + 225, cy + 85);
+        ctx.moveTo(cx + 240, cy + 85); ctx.lineTo(cx + 240, cy + 70);
+        ctx.stroke();
+        ctx.restore();
+
+        // -------------------------------------------------------------
+        // LAYER 4: Logarithmic Accretion Disk Arms (Swirling Singularity)
+        // -------------------------------------------------------------
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
 
-        // 1. Relativistic Infall Particles (Orbiting into Singularity)
+        const totalArms = 4;
+        const currentRot = (coreRotation1 * 0.015) + (userRotation * 0.02);
+
+        for (let arm = 0; arm < totalArms; arm++) {
+            const armBaseAngle = (arm * Math.PI * 2 / totalArms) + currentRot;
+            
+            ctx.beginPath();
+            let started = false;
+            for (let r = 28; r <= 175; r += 2.5) {
+                // Logarithmic spiral math: theta = theta_0 + b * ln(r/r0)
+                const armAngle = armBaseAngle + 2.35 * Math.log(r / 26);
+                const px = cx + r * Math.cos(armAngle);
+                const py = cy + (r * 0.88) * Math.sin(armAngle);
+
+                if (!started) {
+                    ctx.moveTo(px, py);
+                    started = true;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+
+            const spiralGrad = ctx.createRadialGradient(cx, cy, 28, cx, cy, 175);
+            spiralGrad.addColorStop(0, '#ffffff');
+            spiralGrad.addColorStop(0.2, primaryColor);
+            spiralGrad.addColorStop(0.6, violetColor);
+            spiralGrad.addColorStop(0.88, magentaColor);
+            spiralGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+            ctx.strokeStyle = spiralGrad;
+            ctx.lineWidth = 14 * (1 + pulse * 0.15);
+            ctx.lineCap = 'round';
+            ctx.stroke();
+
+            // Inner intense bright streak
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+            ctx.stroke();
+        }
+        ctx.restore();
+
+        // -------------------------------------------------------------
+        // LAYER 5: Relativistic Infall Particles & Stellar Matter
+        // -------------------------------------------------------------
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+
         particles.forEach((p, idx) => {
-            const orbitalSpeed = (75 / Math.max(p.dist, 10)) * 0.015;
-            p.angle += (p.baseSpeed + orbitalSpeed) * (spinRate / 0.025);
-            p.dist -= p.infallSpeed * (spinRate / 0.025) + (pulse * 0.2);
+            const orbitalSpeed = (90 / Math.max(p.dist, 14)) * 0.018;
+            p.prevAngle = p.angle;
+            p.prevDist = p.dist;
+
+            p.angle += (p.baseSpeed + orbitalSpeed) * (spinRate / 0.024);
+            p.dist -= p.infallSpeed * (spinRate / 0.024) + (pulse * 0.25);
 
             if (p.dist <= eventHorizonRadius) {
                 particles[idx] = spawnCosmicParticle(true);
@@ -1181,32 +1337,106 @@
             }
 
             const px = cx + p.dist * Math.cos(p.angle);
-            const py = cy + (p.dist * 0.82) * Math.sin(p.angle);
+            const py = cy + (p.dist * 0.88) * Math.sin(p.angle);
+
+            const prevX = cx + p.prevDist * Math.cos(p.prevAngle);
+            const prevY = cy + (p.prevDist * 0.88) * Math.sin(p.prevAngle);
 
             let pCol = '#ffffff';
             if (p.colorType === 1) pCol = primaryColor;
             else if (p.colorType === 2) pCol = magentaColor;
             else if (p.colorType === 3) pCol = violetColor;
 
-            ctx.fillStyle = pCol;
-            ctx.globalAlpha = Math.min(1, p.alpha * ((p.dist - eventHorizonRadius) / 16));
+            // Trailing motion streak
             ctx.beginPath();
-            ctx.arc(px, py, p.size * (1 + pulse * 0.4), 0, Math.PI * 2);
+            ctx.moveTo(prevX, prevY);
+            ctx.lineTo(px, py);
+            ctx.strokeStyle = pCol;
+            ctx.globalAlpha = Math.min(1, p.alpha * ((p.dist - eventHorizonRadius) / 20));
+            ctx.lineWidth = p.size;
+            ctx.stroke();
+
+            // Glowing particle head
+            ctx.fillStyle = pCol;
+            ctx.beginPath();
+            ctx.arc(px, py, p.size * (1 + pulse * 0.35), 0, Math.PI * 2);
             ctx.fill();
         });
+        ctx.restore();
 
-        // 2. Photonsphere Radiance Pulse (when Thinking / Speaking / Listening)
-        if (coreState !== 'idle' || pulse > 0.7) {
-            const haloGrad = ctx.createRadialGradient(cx, cy, eventHorizonRadius * 0.8, cx, cy, eventHorizonRadius * 2.2);
-            haloGrad.addColorStop(0, 'transparent');
-            haloGrad.addColorStop(0.5, primaryColor);
-            haloGrad.addColorStop(1, 'transparent');
-            ctx.fillStyle = haloGrad;
-            ctx.globalAlpha = 0.45 * pulse;
-            ctx.beginPath();
-            ctx.arc(cx, cy, eventHorizonRadius * 2.2, 0, Math.PI * 2);
-            ctx.fill();
-        }
+        // -------------------------------------------------------------
+        // LAYER 6: Photonsphere / Einstein Ring Halo
+        // -------------------------------------------------------------
+        ctx.save();
+        ctx.globalCompositeOperation = 'lighter';
+        const haloGrad = ctx.createRadialGradient(cx, cy, eventHorizonRadius * 0.85, cx, cy, eventHorizonRadius * 2.3);
+        haloGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        haloGrad.addColorStop(0.35, '#ffffff');
+        haloGrad.addColorStop(0.65, primaryColor);
+        haloGrad.addColorStop(0.9, violetColor);
+        haloGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+        ctx.fillStyle = haloGrad;
+        ctx.globalAlpha = 0.85 + pulse * 0.15;
+        ctx.beginPath();
+        ctx.arc(cx, cy, eventHorizonRadius * 2.3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // -------------------------------------------------------------
+        // LAYER 7: Event Horizon Void (Pure Pitch Black Center)
+        // -------------------------------------------------------------
+        ctx.save();
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(cx, cy, eventHorizonRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Razor-thin neon cyan photon ring around void
+        ctx.strokeStyle = primaryColor;
+        ctx.lineWidth = 1.8;
+        ctx.shadowColor = primaryColor;
+        ctx.shadowBlur = 10;
+        ctx.stroke();
+        ctx.restore();
+
+        // -------------------------------------------------------------
+        // LAYER 8: Pure Code Futuristic Typography "AURA" (No Watermark!)
+        // -------------------------------------------------------------
+        ctx.save();
+        const textY = 345;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '900 52px "Orbitron", -apple-system, sans-serif';
+
+        // Outer neon glow
+        ctx.shadowColor = primaryColor;
+        ctx.shadowBlur = 24 + pulse * 8;
+
+        // Metallic chrome-to-violet gradient fill
+        const textGrad = ctx.createLinearGradient(cx, textY - 26, cx, textY + 26);
+        textGrad.addColorStop(0, '#ffffff');
+        textGrad.addColorStop(0.35, '#c7d2fe');
+        textGrad.addColorStop(0.7, '#818cf8');
+        textGrad.addColorStop(1, '#c084fc');
+        ctx.fillStyle = textGrad;
+        ctx.fillText('AURA', cx, textY);
+
+        // Neon outline
+        ctx.shadowColor = primaryColor;
+        ctx.shadowBlur = 12;
+        ctx.strokeStyle = primaryColor;
+        ctx.lineWidth = 2.4;
+        ctx.strokeText('AURA', cx, textY);
+
+        // Subtle tech center beam line across typography
+        ctx.beginPath();
+        ctx.moveTo(cx - 120, textY);
+        ctx.lineTo(cx + 120, textY);
+        ctx.strokeStyle = 'rgba(0, 240, 255, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
         ctx.restore();
 
